@@ -235,6 +235,7 @@ pub struct Config {
     map_type: PathMap<MapType>,
     bytes_type: PathMap<BytesType>,
     type_attributes: PathMap<String>,
+    struct_type_attributes: PathMap<String>,
     field_attributes: PathMap<String>,
     prost_types: bool,
     strip_enum_prefix: bool,
@@ -453,6 +454,17 @@ impl Config {
         A: AsRef<str>,
     {
         self.type_attributes
+            .insert(path.as_ref().to_string(), attribute.as_ref().to_string());
+        self
+    }
+
+    /// Same as [`type_attribute`](#method.type_attribute) but only apply to rust struct.
+    pub fn struct_type_attribute<P, A>(&mut self, path: P, attribute: A) -> &mut Self
+    where
+        P: AsRef<str>,
+        A: AsRef<str>,
+    {
+        self.struct_type_attributes
             .insert(path.as_ref().to_string(), attribute.as_ref().to_string());
         self
     }
@@ -1026,6 +1038,7 @@ impl default::Default for Config {
             map_type: PathMap::default(),
             bytes_type: PathMap::default(),
             type_attributes: PathMap::default(),
+            struct_type_attributes: PathMap::default(),
             field_attributes: PathMap::default(),
             prost_types: true,
             strip_enum_prefix: true,

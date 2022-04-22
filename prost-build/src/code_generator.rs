@@ -183,6 +183,7 @@ impl<'a> CodeGenerator<'a> {
 
         self.append_doc(&fq_message_name, None);
         self.append_type_attributes(&fq_message_name);
+        self.append_struct_type_attributes(&fq_message_name);
         self.push_indent();
         self.buf
             .push_str("#[derive(Clone, PartialEq, ::prost::Message)]\n");
@@ -257,6 +258,15 @@ impl<'a> CodeGenerator<'a> {
             }
 
             self.pop_mod();
+        }
+    }
+
+    fn append_struct_type_attributes(&mut self, fq_message_name: &str) {
+        assert_eq!(b'.', fq_message_name.as_bytes()[0]);
+        for attribute in self.config.struct_type_attributes.get(fq_message_name) {
+            push_indent(self.buf, self.depth);
+            self.buf.push_str(attribute);
+            self.buf.push('\n');
         }
     }
 
